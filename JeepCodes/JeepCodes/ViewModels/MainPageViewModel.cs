@@ -69,7 +69,8 @@ namespace JeepCodes.ViewModels
             string _jeepCode = JeepCode.ToUpper();
             string[] _jeepCodes = _jeepCode.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             int _jeepCodesLength = _jeepCodes.Length;
-            string[] _arrayOfColors = new string[] { "blue", "red", "orange", "green", "yellow" };
+            string[] _arrayOfColors = new string[] { "red", "blue", "orange", "green", "yellow", "indigo", "maroon", "aqua", "blueviolet", "brown"};
+            // store the color of matching jeep route in each jeep code
             IDictionary<string, string> _matchingJeepColors = new Dictionary<string, string>();
 
             if (_jeepCodes.Length == 0 )
@@ -78,32 +79,40 @@ namespace JeepCodes.ViewModels
             }
             else
             {
+                // loop through to all codes in the jeep codes input from the user
                 for (int row = 0; row < _jeepCodesLength; row++)
                 {
                     string _code = _jeepCodes[row].Trim();
                     answer += _code + "=>";
+                    // get the routes array associated in this jeep code
                     string[] _routesOfJeep = jeepCodesArr[_code];
-
+                    
+                    // loopt through to all the routes in this specific jeep code (refere line 87)
                     for (int _routesIndex = 0; _routesIndex < _routesOfJeep.Length; _routesIndex++)
                     {
                         string _value = _routesOfJeep[_routesIndex];
                         bool _existsInOthers = false;
                         string _matchingCode = "";
 
+                        // if jeep codes input by user is greater than, then do these
                         if (_jeepCodesLength > 1)
                         {
                             for (int col = 0; col < _jeepCodesLength; col++)
                             {
+                                // current jeep code to check to other jeep codes
                                 string _codeToCheckAgainst = _jeepCodes[col].Trim();
+                                // current route assiocated to current jeep code
                                 string[] _routesOfJeepToCheckAgainst = jeepCodesArr[_codeToCheckAgainst];
 
+                                // check if the _value (line 93) exists in the current route (line 105) and if it exists then they are the same..
                                 if ( row != col && Array.Exists(_routesOfJeepToCheckAgainst, x => x == _value))
                                 {
+                                    // check if the current route which is the same to other route has existing color counterpart,
+                                    // if there isn't then add specific color for this route
                                     if (!_matchingJeepColors.TryGetValue(_value, out var result))
                                     {
-                                        string _color = _arrayOfColors[row % 4];
+                                        string _color = _arrayOfColors[row % 10];
                                         _matchingJeepColors[_value] = _color;
-                                        // answer += _matchingJeepColors[_value];
                                     }
                                     _matchingCode = _value;
                                     _existsInOthers = true;
@@ -120,8 +129,6 @@ namespace JeepCodes.ViewModels
                         else if (_routesIndex == _routesOfJeep.Length - 1 && row != _jeepCodesLength - 1)
                             answer += ", ";
                     }
-                    // if (row != _jeepCodesLength - 1)
-                    //    answer += "<->";
                 }
             }
             Answer = answer;
