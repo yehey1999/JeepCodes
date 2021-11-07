@@ -29,6 +29,7 @@ namespace JeepCodes.ViewModels
 
         private string jeepCode = "";
         private string answer;
+        private FormattedString formatted = new FormattedString();
 
         public string JeepCode
         {
@@ -56,6 +57,19 @@ namespace JeepCodes.ViewModels
             }
         }
 
+        public FormattedString FormattedAnswer
+        {
+            get
+            {
+                return formatted;
+            }
+            set
+            {
+                formatted = value;
+                OnPropertyChanged("FormattedAnswer");
+            }
+        }
+
         public Command OnClickShowResultCommand { get; private set; }
 
         public MainPageViewModel()
@@ -70,12 +84,17 @@ namespace JeepCodes.ViewModels
             string[] _jeepCodes = _jeepCode.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             int _jeepCodesLength = _jeepCodes.Length;
             string[] _arrayOfColors = new string[] { "red", "blue", "orange", "green", "yellow", "indigo", "maroon", "aqua", "blueviolet", "brown"};
+            Color[] _arrayOfObjectColors = new Color[] { Color.Red, Color.Blue, Color.Orange, Color.Green, Color.Indigo, Color.Maroon, Color.Aqua, Color.BlueViolet, Color.Brown };
+            
+            FormattedString formattedAnswer = new FormattedString();
+
             // store the color of matching jeep route in each jeep code
             IDictionary<string, string> _matchingJeepColors = new Dictionary<string, string>();
-
+            IDictionary<string, Color> _matchingJeepObjectColors = new Dictionary<string, Color>();
             if (_jeepCodes.Length == 0 )
             {
                 answer = "JeepCode/s is empty";
+                formattedAnswer.Spans.Add(new Span { Text = "JeepCode/s is empty" } );
             }
             else
             {
@@ -84,9 +103,10 @@ namespace JeepCodes.ViewModels
                 {
                     string _code = _jeepCodes[row].Trim();
                     answer += _code + "=>";
+                    formattedAnswer.Spans.Add(new Span { Text=_code+"=>" });
                     // get the routes array associated in this jeep code
                     string[] _routesOfJeep = jeepCodesArr[_code];
-                    
+
                     // loopt through to all the routes in this specific jeep code (refere line 87)
                     for (int _routesIndex = 0; _routesIndex < _routesOfJeep.Length; _routesIndex++)
                     {
@@ -105,7 +125,7 @@ namespace JeepCodes.ViewModels
                                 string[] _routesOfJeepToCheckAgainst = jeepCodesArr[_codeToCheckAgainst];
 
                                 // check if the _value (line 93) exists in the current route (line 105) and if it exists then they are the same..
-                                if ( row != col && Array.Exists(_routesOfJeepToCheckAgainst, x => x == _value))
+                                if (row != col && Array.Exists(_routesOfJeepToCheckAgainst, x => x == _value))
                                 {
                                     // check if the current route which is the same to other route has existing color counterpart,
                                     // if there isn't then add specific color for this route
@@ -113,6 +133,8 @@ namespace JeepCodes.ViewModels
                                     {
                                         string _color = _arrayOfColors[row % 10];
                                         _matchingJeepColors[_value] = _color;
+                                        Color _colorObject = _arrayOfObjectColors[row % 10];
+                                        _matchingJeepObjectColors[_value] = _colorObject;
                                     }
                                     _matchingCode = _value;
                                     _existsInOthers = true;
@@ -121,17 +143,30 @@ namespace JeepCodes.ViewModels
                             }
                         }
                         if (_existsInOthers)
+                        {
                             answer += " <span style='color: " + _matchingJeepColors[_matchingCode] + ";'>" + _value + "</span>";
+                            formattedAnswer.Spans.Add(new Span { Text = _value, ForegroundColor = _matchingJeepObjectColors[_matchingCode] });
+                        }
                         else
+                        {
                             answer += " " + _value;
+                            formattedAnswer.Spans.Add(new Span { Text = " " + _value });
+                        }
                         if (_routesIndex != _routesOfJeep.Length - 1)
+                        {
                             answer += "->";
+                            formattedAnswer.Spans.Add(new Span { Text = "<->" });
+                        }
                         else if (_routesIndex == _routesOfJeep.Length - 1 && row != _jeepCodesLength - 1)
+                        {
                             answer += ", ";
+                            formattedAnswer.Spans.Add(new Span { Text = ", " });
+                        }
                     }
                 }
             }
             Answer = answer;
+            FormattedAnswer = formattedAnswer;
         }
     }
 }
