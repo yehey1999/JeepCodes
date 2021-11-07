@@ -27,7 +27,7 @@ namespace JeepCodes.ViewModels
             { "42D", new string[] { "Juliet", "November", "Oscar", "Quebec", "Romeo" } }
         };
 
-        private string jeepCode;
+        private string jeepCode = "";
         private string answer;
 
         public string JeepCode
@@ -67,7 +67,7 @@ namespace JeepCodes.ViewModels
         {
             string answer = "";
             string _jeepCode = JeepCode.ToUpper();
-            string[] _jeepCodes = _jeepCode.Split(',');
+            string[] _jeepCodes = _jeepCode.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             int _jeepCodesLength = _jeepCodes.Length;
             string[] _arrayOfColors = new string[] { "blue", "red", "orange", "green", "yellow" };
             IDictionary<string, string> _matchingJeepColors = new Dictionary<string, string>();
