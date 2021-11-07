@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="JeepCodes.MainPage">
+
+    <Grid x:Name="GridHolder" RowSpacing="0" ColumnSpacing="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="75" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Entry x:Name="entry" Grid.Row="0" Grid.Column="0" Text="{Binding JeepCode}" />
+        <Button Text="Show" Grid.Row="0" Grid.Column="1" Command="{Binding OnClickShowResultCommand}"/>
+        <Label TextType="Html" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Answer}"/>
+    </Grid>
+
+</ContentPage>
